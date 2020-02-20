@@ -3,9 +3,9 @@ package com.softserve.academy;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//checking the number of commas
-public class CheckAttr {
-    public static boolean checkForCommas(String input) {
+public class CheckAttr{
+    //the method checks that the user has entered three commas
+    public static boolean isForCommas(String input) {
         Pattern pattern = Pattern.compile(",");
         Matcher matcher = pattern.matcher(input);
         int count = 0;
@@ -14,7 +14,7 @@ public class CheckAttr {
         }
         return count == 3;
     }
-    // split string
+    // split string and write to array, trim spaces
     public static String[] parseInput(String input) {
         String[] inputArr = input.split(",");
         for (int i = 0; i < inputArr.length; i++) {
@@ -22,4 +22,5 @@ public class CheckAttr {
         }
         return inputArr;
     }
+
 }

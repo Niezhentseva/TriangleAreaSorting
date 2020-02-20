@@ -1,64 +1,55 @@
 package com.softserve.academy;
 
 import java.text.DecimalFormat;
-import java.util.Comparator;
-import java.util.List;
 
 public class Triangle{
     private String name;
-    private double area;
     private double side1;
     private double side2;
     private double side3;
+    private double area;
 
-    // convert 3 sides to double and check format of all attributes
-    Triangle(String[] args) throws NumberFormatException {
-        this.name = args[0];
-        this.side1 = Double.parseDouble(args[1]);
-        this.side2 = Double.parseDouble(args[2]);
-        this.side3 = Double.parseDouble(args[3]);
-        if (!checkTriangle(side1, side2, side3)) {
-            throw new IllegalArgumentException("");
-        }
-    }
-
-    // check the ability to create a triangle
-    private static boolean checkTriangle(double side1, double side2, double side3) {
-        return (side1 + side2 > side3
-                && side1 + side3 > side2
-                && side2 + side3 > side1);
+    private Triangle(String name, double side1, double side2, double side3){
+        this.name = name;
+        this.side1 = side1;
+        this.side2 = side2;
+        this.side3 = side3;
     }
 
     double getArea() {
-        area = calculateArea();
+        if (area == 0) {
+            area = calculateArea();
+        }
         return area;
     }
 
     private double calculateArea() {
-        double halfPerim = getHalfPerim();
-        double diff1 = halfPerim - side1;
-        double diff2 = halfPerim - side2;
-        double diff3 = halfPerim - side3;
-        return Math.sqrt(halfPerim * diff1 * diff2 * diff3);
+        double halfPerimeter = getHalfPerimeter();
+        double diff1 = halfPerimeter - side1;
+        double diff2 = halfPerimeter - side2;
+        double diff3 = halfPerimeter - side3;
+        return Math.sqrt(halfPerimeter * diff1 * diff2 * diff3);
     }
 
-    private double getHalfPerim() {
+    private double getHalfPerimeter() {
         return (side1 + side2 + side3) / 2;
     }
 
-   @Override
+    public static Triangle createTriangle(String name, double side1, double side2, double side3)
+            throws IllegalArgumentException {
+        if ((side1 <= 0 || side2 <= 0 || side3 <= 0) ||
+                ((side1 + side2 <= side3)
+                || (side1 + side3 <= side2)
+                || (side2 + side3 <= side1))) {
+            throw new IllegalArgumentException();
+        } else {
+            return new Triangle(name, side1, side2, side3);
+        }
+    }
+    @Override
     public String toString() {
         DecimalFormat df = new DecimalFormat("0.00");
         return String.format("[Triangle %s]: " + df.format(area) + " cm", name);
     }
 
-
-    public static void printTrianglesReversed(List<Triangle> triangles) {
-        triangles.sort(Comparator.comparing(Triangle::getArea).reversed());
-        System.out.println("============= Triangles list: =============");
-        int i = 1;
-        for (Triangle temp : triangles) {
-            System.out.println(i++ + ". " + temp);
-        }
-    }
 }

@@ -7,43 +7,45 @@
 package com.softserve.academy;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 
 public class TriangleAreaSort {
+    public static String startProgram = "Enter attributes of triangle: " +
+        "<name>, <side1>, <side2>, <side3>: ";
+    public static String continueProgram = "Do you want to add another triangle? (y/yes or n/no)";
+    public static String informNoNumber = "Check the input. Sides must be numbers";
+    public static String informNoTriangle = "Check the input. " +
+            "These attributes cannot be sides of a triangle. " +
+            "Rule: The sum of two arbitrary triangle sides " +
+            "is always greater then the third side";
+    public static String informNoThreeSides = "You need to enter three sides of a triangle";
 
     public static void main(String[] args) {
         List<Triangle> triangles = new ArrayList<>(); // create a list
-        Triangle triangle;
-        String answerU = "y";
-        Scanner scanner = new Scanner(System.in);
-
         do {
-            System.out.println("Enter attributes of triangle: <name>, <side1>, <side2>, <side3>: ");
-            String input = scanner.nextLine();
-
-            if (!(CheckAttr.checkForCommas(input))) { //checking the number of commas
-                System.out.println("Incorrect input! ");
+            ConsoleIO.printToConsole(startProgram);
+            String input = ConsoleIO.enterValue();
+            if (!(CheckAttr.isForCommas(input))) { //checking the number of commas
+                ConsoleIO.printToConsole(informNoThreeSides);
             } else {
-                String[] parsedInput = CheckAttr.parseInput(input); // split string
+                String[] arrInput = CheckAttr.parseInput(input); // split string
                 try {
-                    triangle = new Triangle(parsedInput);
-                    triangles.add(triangle); // add a triangle into the list
-                    System.out.println("Do you want to add another triangle? (y/yes or n/no)");
-                    answerU = scanner.nextLine();
+                    triangles.add(
+                            Triangle.createTriangle(
+                                    arrInput[0],
+                                    Double.parseDouble(arrInput[1]),
+                                    Double.parseDouble(arrInput[2]),
+                                    Double.parseDouble(arrInput[3])));
                 } catch (NumberFormatException e) {
-                    System.out.println("Check the input. Sizes must be numbers");
+                    ConsoleIO.printToConsole(informNoNumber);
                 } catch (IllegalArgumentException e) {
-                    System.out.println("Check the input. These cannot be sides of a triangle");
-                } catch (ArrayIndexOutOfBoundsException e){
-                    System.out.println("You need to enter three sides of a triangle");
+                   ConsoleIO.printToConsole(informNoTriangle);
                 }
-
             }
+            ConsoleIO.printToConsole(continueProgram);
+        } while (ConsoleIO.isContinue());
+            triangles.sort(Comparator.comparing(Triangle::getArea).reversed());
+            ConsoleIO.printListTriangles(triangles);
         }
-        while (answerU.equalsIgnoreCase("y") || answerU.equalsIgnoreCase("yes"));
-        Triangle.printTrianglesReversed(triangles);
-        scanner.close();
     }
-
-}
